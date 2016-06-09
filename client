@@ -10,14 +10,7 @@ local function main()
 		local task = net.getTask(serverID, protocol)
 		if (task) then
 			local result = task()
-			while (true) do
-				rednet.endTask(serverID, result, protocol)
-				id, mes = rednet.receive(protocol, 5)
-				print("Received: " .. mes)
-				if (id == serverID and mes == "ack") then
-					break
-				end
-			end
+			net.endTask(serverID, result, protocol)
 		end
 	end
 end
