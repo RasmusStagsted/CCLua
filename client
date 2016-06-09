@@ -6,7 +6,6 @@ local function main()
 	print("Waiting for server ID!")
 	serverID = net.getServerID(protocol)
 	while true do
-		print("Atempting to get task!")
 		local task = net.getTask(serverID, protocol)
 		if (task) then
 			local result = task()
