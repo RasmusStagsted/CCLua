@@ -42,6 +42,8 @@ function main()
 
 		while (true) do
 
+			print("Idle!")
+
 			-- Receive message from slave
 			local id, mes = rednet.receive(protocol)
 
@@ -77,7 +79,7 @@ function main()
 			elseif (cmd[1] == "end") then
 
 				-- End task
-				if (cmd[2] == task) then
+				if (cmd[2] == "task") then
 					print("Client ended task")
 					rednet.send(id, "ack", protocol)
 					slaveStatus[id] = "Dry!"
