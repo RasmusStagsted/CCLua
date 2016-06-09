@@ -3,6 +3,14 @@ local modemSide = "back"
 
 local args = {...}
 
+-- Setup boundary box
+local x1 = math.min(args[1], args[4])
+local y1 = math.min(args[2], args[5])
+local z1 = math.min(args[3], args[6])
+local x2 = math.max(args[1], args[4])
+local y2 = math.max(args[2], args[5])
+local z2 = math.max(args[3], args[6])
+
 local slaveStatus = {}
 
 local map = {}
@@ -12,14 +20,14 @@ local coordStack = {}
 local taskList = {}
 
 function drawMap()
-	for i = 1, math.abs(args[1] - args[4]), 1 do
+	for x = x1, x2, 1 do
 		local str = ""
-		for j = 1, math.abs(args[3] - args[6]), 1 do
-			if (map[args[1] + i][args[2]][args[3] + j] == "unknown") then
+		for z = z1, z2, 1 do
+			if (map[i][0][j] == "unknown") then
 				str = str .. "?"
-			elseif (map[args[1] + i][args[2]][args[3] + j] == "freespace") then
+			elseif (map[i][0][j] == "freespace") then
 				str = str .. " "
-			elseif (map[args[1] + i][args[2]][args[3] + j] == "obstacle") then
+			elseif (map[i][0][j] == "obstacle") then
 				str = str .. "x"
 			end
 		end
@@ -75,13 +83,6 @@ function main()
 			modemSide = args[7]
 		end
 
-		-- Setup boundary box
-		local x1 = math.min(args[1], args[4])
-		local y1 = math.min(args[2], args[5])
-		local z1 = math.min(args[3], args[6])
-		local x2 = math.max(args[1], args[4])
-		local y2 = math.max(args[2], args[5])
-		local z2 = math.max(args[3], args[6])
 		for x = x1, x2, 1 do
 			map[x] = {}
 			for y = y1, y2, 1 do

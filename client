@@ -1,5 +1,5 @@
 local protocol = "slave"
-local serverID = nill
+local serverID = nil
 
 -- Main function
 local function main()

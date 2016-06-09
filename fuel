@@ -1,8 +1,8 @@
 function refuel(item, count)
-	if (count == nill) then
+	if (count == nil) then
 		count = 1
 	end
-	if (item == nill) then
+	if (item == nil) then
 		for i = 1, 16, 1 do
 			turtle.select(i)
 			if turtle.refuel() then

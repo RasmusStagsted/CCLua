@@ -27,7 +27,7 @@ end
 function endTask(serverID, result, protocol)
 
 	while (true) do
-		if (result == nill) then
+		if (result == nil) then
 			result = ""
 		end
 		rednet.send(serverID, "end task " .. result, protocol)
@@ -43,12 +43,12 @@ function getFuel(serverID, protocol)
 
 	local x, y, z = gps.locate()
 
-	if (protocol == nill) then
+	if (protocol == nil) then
 		protocol = "fuel"
 	end
 
 	while (true) do
-		if (serverID == nill) then
+		if (serverID == nil) then
 			rednet.broadcast("request fuel " .. x .. " " .. y .. " " .. z, protocol)
 		else
 			rednet.send(serverID, "request fuel " .. x .. " " .. y .. " " .. z, protocol)

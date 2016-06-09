@@ -6,10 +6,10 @@ end
 local direction = "unknown"
 
 function forward(length, force)
-	if (length == nill) then
+	if (length == nil) then
 		length = 1
 	end
-	if (force == nill) then
+	if (force == nil) then
 		force = false
 	end
 	for i = 1, length, 1 do
@@ -36,10 +36,10 @@ function backward(length, force)
 		end
 	end
 
-	if (length == nill) then
+	if (length == nil) then
 		length = 1
 	end
-	if (force == nill) then
+	if (force == nil) then
 		force = false
 	end
 
@@ -71,10 +71,10 @@ function backward(length, force)
 end
 
 function up(length, force)
-	if (length == nill) then
+	if (length == nil) then
 		length = 1
 	end
-	if (force == nill) then
+	if (force == nil) then
 		force = false
 	end
 	for i = 1, length, 1 do
@@ -92,10 +92,10 @@ function up(length, force)
 end
 
 function down(length, force)
-	if (length == nill) then
+	if (length == nil) then
 		length = 1
 	end
-	if (force == nill) then
+	if (force == nil) then
 		force = false
 	end
 	for i = 1, length, 1 do

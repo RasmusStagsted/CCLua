@@ -1,7 +1,7 @@
 function select(item)
 	for i = 1, 16, 1 do
 		d = turtle.getItemDetail(i)
-		if not (d == nill) then
+		if not (d == nil) then
 			if (d.name == item) then
 				turtle.select(i)
 				return true
@@ -15,7 +15,7 @@ function getItemCount(item)
 	local count = 0
 	for i = 1, 16, 1 do
 		d = turtle.getItemDetail(i)
-		if not (d == nill) then
+		if not (d == nil) then
 			if (d.name == item) then
 				count = count + d.count
 			end
@@ -26,8 +26,8 @@ end
 
 function getItemInSlot(slot)
 	d = turtle.getItemDetail(slot)
-	if (d == nill) then
-		return nill
+	if (d == nil) then
+		return nil
 	else
 		return d.name
 	end

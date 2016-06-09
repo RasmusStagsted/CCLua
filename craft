@@ -1,8 +1,7 @@
 local recipe = {}
 recipe["minecraft:planks"] = {"minecraft:log"}
 recipe["minecraft:wooden_slab"] = {"minecraft:planks", "minecraft:planks", "minecraft:planks"}
-recipe["exnihilo:barrel"] = {"minecraft:planks", nill, "minecraft:planks", "minecraft:planks", nill, "minecraft:planks", "minecraft:planks", "minecraft:wooden_slab", "minecraft:planks"}
-
+recipe["exnihilo:barrel"] = {"minecraft:planks", nil, "minecraft:planks", "minecraft:planks", nil, "minecraft:planks", "minecraft:planks", "minecraft:wooden_slab", "minecraft:planks"}
 
 local resultCount = {}
 resultCount["minecraft:planks"] = 4
@@ -12,27 +11,27 @@ resultCount["exnihilo:barrel"] = 1
 function item(item, count, force)
 
 	-- Check for recipe
-	if (recipe[item] == nill) then
+	if (recipe[item] == nil) then
 		print("Unknown recipe!")
 		return false
 	end
 
 	-- Check for valid number
-	if (count == nill) then
+	if (count == nil) then
 		count = 1
 	elseif (count > 64) then
 		count = 64
 	end
 
 	-- Check force state
-	if (force == nill) then
+	if (force == nil) then
 		force = false
 	end
 
 	-- Create a list of items in recipe
 	local itemInRecipe = {}
 	for i = 1, 9, 1 do
-		if not (recipe[item][i] == nill) then
+		if not (recipe[item][i] == nil) then
 			local match = false
 			for j = 1, #itemInRecipe, 1 do
 				if (itemInRecipe[j] == recipe[item][i]) then
@@ -104,7 +103,7 @@ function item(item, count, force)
 	for i = 1, 16, 1 do
 		local foundInRecipe = false
 		for j = 1, #itemInRecipe, 1 do
-			if (inventory.getItemInSlot(i) == itemInRecipe[j] or inventory.getItemInSlot(i) == nill) then
+			if (inventory.getItemInSlot(i) == itemInRecipe[j] or inventory.getItemInSlot(i) == nil) then
 				foundInRecipe = true
 				break
 			end
@@ -134,7 +133,7 @@ function item(item, count, force)
 	for i = 1, 3, 1 do
 		for j = 1, 3, 1 do
 			-- If slot should to be empty
-			if (recipe[item][(i - 1) * 3 + j] == nill) then
+			if (recipe[item][(i - 1) * 3 + j] == nil) then
 				if (turtle.getItemCount((i - 1) * 4 + j) > 0) then
 					for k = 1, 16, 1 do
 						turtle.select((i - 1) * 4 + j)
@@ -172,7 +171,7 @@ function item(item, count, force)
 					while (turtle.getItemCount((i - 1) * 4 + j) < math.ceil(count / resultCount[item])) do
 						for l = (i - 1) * 4 + j + 1, 16, 1 do
 							d = turtle.getItemDetail(l)
-							if not (d == nill) then
+							if not (d == nil) then
 								if (d.name == recipe[item][(i - 1) * 3 + j]) then
 									turtle.select(l)
 									break
