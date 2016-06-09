@@ -11,7 +11,7 @@ local function main()
 		if (task) then
 			local result = task()
 			while (true) do
-				net.endTask(serverID, result, protocol)
+				rednet.endTask(serverID, result, protocol)
 				id, mes = rednet.receive(protocol, 5)
 				print("Received: " .. mes)
 				if (id == serverID and mes == "ack") then
@@ -53,13 +53,13 @@ if (fs.exists("disk/")) then
 			shell.run("git rasmusstagsted CCLua .")
 		end
 	end
-
-	-- Load all APIs
-	print("Loading APIs!")
-	shell.run("loadAPIs")
-
-	-- Run main function while waiting on update
-	rednet.open("left")
-	parallel.waitForAny(main, waitForUpdate)
-	rednet.close("left")
 end
+
+-- Load all APIs
+print("Loading APIs!")
+shell.run("loadAPIs")
+
+-- Run main function while waiting on update
+rednet.open("left")
+parallel.waitForAny(main, waitForUpdate)
+rednet.close("left")
