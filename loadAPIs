@@ -15,6 +15,6 @@ if not (os.loadAPI("net")) then
 end
 
 function updateAPIs()
-	shell.run("git NielsH12 computercraft .")
+	shell.run("git rasmusstagsted CCLua .")
 	shell.run("loadAPIs")
 end

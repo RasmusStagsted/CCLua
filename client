@@ -9,8 +9,9 @@ local function main()
 		print("Atempting to get task!")
 		local task = net.getTask(serverID, protocol)
 		if (task) then
+			local result = task()
 			while (true) do
-				net.endTask(serverID, protocol, task())
+				net.endTask(serverID, result, protocol)
 				id, mes = rednet.receive(protocol)
 				if (id == serverID and mes == "ack") then
 					break
@@ -48,7 +49,7 @@ if (fs.exists("disk/")) then
 		if (fs.exists("loadAPIs")) then
 			shell.run("loadAPIs")
 		else
-			shell.run("git NielsH12 computercraft .")
+			shell.run("git rasmusstagsted CCLua .")
 		end
 	end
 

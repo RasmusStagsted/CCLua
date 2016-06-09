@@ -24,7 +24,7 @@ function getTask(serverID, protocol)
 
 end
 
-function endTask(serverID, protocol, result)
+function endTask(serverID, result, protocol)
 
 	while (true) do
 		if (result == nill) then
