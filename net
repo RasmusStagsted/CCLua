@@ -1,0 +1,62 @@
+function getServerID(protocol)
+
+	while (true) do
+		rednet.broadcast("get serverID", protocol)
+		local id, mes = rednet.receive(protocol, 5)
+		if (mes == "ack") then
+			return id
+		end
+	end
+
+end
+
+function getTask(serverID, protocol)
+
+	local x, y, z = gps.locate()
+
+	while (true) do
+		rednet.send(serverID, "get task " .. x .. " " .. y .. " " .. z, protocol)
+		local id, mes = rednet.receive(protocol, 5)
+		if (id == serverID) then
+			return loadstring(mes)
+		end
+	end
+
+end
+
+function endTask(serverID, protocol, result)
+
+	while (true) do
+		if (result == nill) then
+			result = ""
+		end
+		rednet.send(serverID, "end task " .. result, protocol)
+		local id, mes = rednet.receive(protocol, 5)
+		if (id == serverID and mes == "ack") then
+			return true
+		end
+	end
+
+end
+
+function getFuel(serverID, protocol)
+
+	local x, y, z = gps.locate()
+
+	if (protocol == nill) then
+		protocol = "fuel"
+	end
+
+	while (true) do
+		if (serverID == nill) then
+			rednet.broadcast("request fuel " .. x .. " " .. y .. " " .. z, protocol)
+		else
+			rednet.send(serverID, "request fuel " .. x .. " " .. y .. " " .. z, protocol)
+		end
+		local id, mes = rednet.receive(protocol, 5)
+		if (id == serverID) then
+			return mes
+		end
+	end
+
+end

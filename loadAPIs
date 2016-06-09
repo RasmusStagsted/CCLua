@@ -1,0 +1,20 @@
+if not (os.loadAPI("craft")) then
+	print("Can't load 'craft' API!")
+end
+if not (os.loadAPI("move")) then
+	print("Can't load 'move' API!")
+end
+if not (os.loadAPI("fuel")) then
+	print("Can't load 'fuel' API!")
+end
+if not (os.loadAPI("inventory")) then
+	print("Can't load 'inventory' API!")
+end
+if not (os.loadAPI("net")) then
+	print("Can't load 'net' API!")
+end
+
+function updateAPIs()
+	shell.run("git NielsH12 computercraft .")
+	shell.run("loadAPIs")
+end

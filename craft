@@ -1,0 +1,198 @@
+local recipe = {}
+recipe["minecraft:planks"] = {"minecraft:log"}
+recipe["minecraft:wooden_slab"] = {"minecraft:planks", "minecraft:planks", "minecraft:planks"}
+recipe["exnihilo:barrel"] = {"minecraft:planks", nill, "minecraft:planks", "minecraft:planks", nill, "minecraft:planks", "minecraft:planks", "minecraft:wooden_slab", "minecraft:planks"}
+
+
+local resultCount = {}
+resultCount["minecraft:planks"] = 4
+resultCount["minecraft:wooden_slab"] = 6
+resultCount["exnihilo:barrel"] = 1
+
+function item(item, count, force)
+
+	-- Check for recipe
+	if (recipe[item] == nill) then
+		print("Unknown recipe!")
+		return false
+	end
+
+	-- Check for valid number
+	if (count == nill) then
+		count = 1
+	elseif (count > 64) then
+		count = 64
+	end
+
+	-- Check force state
+	if (force == nill) then
+		force = false
+	end
+
+	-- Create a list of items in recipe
+	local itemInRecipe = {}
+	for i = 1, 9, 1 do
+		if not (recipe[item][i] == nill) then
+			local match = false
+			for j = 1, #itemInRecipe, 1 do
+				if (itemInRecipe[j] == recipe[item][i]) then
+					match = true
+					break
+				end
+			end
+			if not (match) then
+				table.insert(itemInRecipe, recipe[item][i])
+			end
+		end
+	end
+
+	-- Create list of item counts in recipe
+	local itemCountInRecipe = {}
+	for i = 1, #itemInRecipe, 1 do
+		local itemCount = 0
+		for j = 1, 9, 1 do
+			if (itemInRecipe[i] == recipe[item][j]) then
+				itemCount = itemCount + 1
+			end
+		end
+		itemCountInRecipe[i] = itemCount * math.ceil(count / resultCount[item])
+	end
+
+	-- Create list of items for use
+	local itemCount = {}
+	for i = 1, #itemInRecipe, 1 do
+		itemCount[i] = inventory.getItemCount(itemInRecipe[i])
+	end
+
+	-- Check for missing items
+	local missingItem = false
+	local fixedMissingItem = false
+	for i = 1, #itemInRecipe, 1 do
+		if (itemCount[i] < itemCountInRecipe[i]) then
+			if (craftItem(itemInRecipe[i], math.ceil(itemCountInRecipe[i] - itemCount[i]), true)) then
+				fixedMissingItem = true
+			else
+				missingItem = true
+			end
+		end
+	end
+	if (fixedMissingItem) then
+		return craftItem(item, count, force)
+	end
+	if (missingItem) then
+		print("Not enought items!")
+		return false
+	end
+
+	-- Place chest
+	if not (inventory.select("minecraft:chest")) then
+		print("No chest found in inventory!")
+		return false
+	end
+	if (force) then
+		while not turtle.placeUp() do
+			turtle.digUp()
+		end
+	else
+		if not (turtle.placeUp()) then
+			print("Cant place chest!")
+			return false
+		end
+	end
+
+	-- Empty for unused item
+	for i = 1, 16, 1 do
+		local foundInRecipe = false
+		for j = 1, #itemInRecipe, 1 do
+			if (inventory.getItemInSlot(i) == itemInRecipe[j] or inventory.getItemInSlot(i) == nill) then
+				foundInRecipe = true
+				break
+			end
+		end
+		if not (foundInRecipe) then
+			turtle.select(i)
+			if not (turtle.dropUp()) then
+				print("Not enough space in chest!")
+				return false
+			end
+		end
+	end
+
+	-- Ready crafting space
+	for i = 1, #itemInRecipe, 1 do
+		for j = 1, 16, 1 do
+			if (inventory.getItemCount(itemInRecipe[i]) > itemCountInRecipe[i]) then
+				inventory.select(itemInRecipe[i])
+				turtle.dropUp(math.min(inventory.getItemCount(itemInRecipe[i]) - itemCountInRecipe[i], 64))
+			else
+				break
+			end
+		end
+	end
+
+	-- Place items
+	for i = 1, 3, 1 do
+		for j = 1, 3, 1 do
+			-- If slot should to be empty
+			if (recipe[item][(i - 1) * 3 + j] == nill) then
+				if (turtle.getItemCount((i - 1) * 4 + j) > 0) then
+					for k = 1, 16, 1 do
+						turtle.select((i - 1) * 4 + j)
+						turtle.transferTo(17 - k)
+						if (turtle.getItemCount((i - 1) * 4 + j) == 0) then
+							break
+						end
+					end
+				end
+			else
+				-- If slot not empty
+				if not (turtle.getItemCount((i - 1) * 4 + j) == 0) then
+					local data = turtle.getItemDetail((i - 1) * 4 + j)
+
+					-- If wrong item in slot
+					if not (data.name == recipe[item][(i - 1) * 3 + j]) then
+						turtle.select((i - 1) * 4 + j)
+						for k = 1, 16, 1 do
+							if (turtle.getItemCount((i - 1) * 4 + j) == 0) then
+								break
+							end
+							turtle.transferTo(17 - k)
+						end
+					else
+						-- If too meny items in slot
+						if (turtle.getItemCount((i - 1) * 4 + j) > count) then
+							turtle.select((i - 1) * 4 + j)
+							for k = 1, 16, 1 do
+								turtle.transferTo(17 - k, turtle.getItemCount((i - 1) * 4 + j) - count)
+							end
+						end
+					end
+				end
+				for k = (i - 1) * 4 + j + 1, 16, 1 do
+					while (turtle.getItemCount((i - 1) * 4 + j) < math.ceil(count / resultCount[item])) do
+						for l = (i - 1) * 4 + j + 1, 16, 1 do
+							d = turtle.getItemDetail(l)
+							if not (d == nill) then
+								if (d.name == recipe[item][(i - 1) * 3 + j]) then
+									turtle.select(l)
+									break
+								end
+							end
+						end
+						turtle.transferTo((i - 1) * 4 + j, math.ceil(count / resultCount[item]) - turtle.getItemCount((i - 1) * 4 + j))
+					end
+				end
+			end
+		end
+	end
+	-- Craft
+	turtle.select(1)
+	turtle.craft()
+
+	-- Fill with unused items
+	turtle.select(1)
+	while (turtle.suckUp()) do end
+	turtle.digUp()
+
+	return true
+end

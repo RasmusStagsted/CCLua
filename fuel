@@ -1,0 +1,20 @@
+function refuel(item, count)
+	if (count == nill) then
+		count = 1
+	end
+	if (item == nill) then
+		for i = 1, 16, 1 do
+			turtle.select(i)
+			if turtle.refuel() then
+				return true
+			end
+		end
+		net.getFuel()
+	else
+		if (inventory.select(item)) then
+			return turtle.refuel(count)
+		else
+			net.getFuel()
+		end
+	end
+end

@@ -1,0 +1,34 @@
+function select(item)
+	for i = 1, 16, 1 do
+		d = turtle.getItemDetail(i)
+		if not (d == nill) then
+			if (d.name == item) then
+				turtle.select(i)
+				return true
+			end
+		end
+	end
+	return false
+end
+
+function getItemCount(item)
+	local count = 0
+	for i = 1, 16, 1 do
+		d = turtle.getItemDetail(i)
+		if not (d == nill) then
+			if (d.name == item) then
+				count = count + d.count
+			end
+		end
+	end
+	return count
+end
+
+function getItemInSlot(slot)
+	d = turtle.getItemDetail(slot)
+	if (d == nill) then
+		return nill
+	else
+		return d.name
+	end
+end
