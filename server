@@ -5,8 +5,48 @@ local args = {...}
 
 local slaveStatus = {}
 
-function getTask(coord)
-	return "print(1)"
+local map = {}
+
+local coordStack = {}
+
+local taskList{}
+
+function getClosest(coord)
+	local tempCoord = {}
+
+	tempCoord[1] = {coord[1] + 1, coord[2], coord[3]}
+	tempCoord[2] = {coord[1], coord[2] + 1, coord[3]}
+	tempCoord[3] = {coord[1], coord[2], coord[3] + 1}
+	tempCoord[4] = {coord[1] - 1, coord[2], coord[3]}
+	tempCoord[5] = {coord[1], coord[2] - 1, coord[3]}
+	tempCoord[6] = {coord[1], coord[2], coord[3] - 1}
+
+	for i = 1, 6, 1 do
+		if (	tempcoord[i][1] < args[1] or
+			tempcoord[i][2] < args[2] or
+			tempcoord[i][3] < args[3] or
+			tempcoord[i][1] > args[4] or
+			tempcoord[i][2] > args[5] or
+			tempcoord[i][3] > args[6]) then
+
+		else if (map[tempCoord[i][1]][tempCoord[i][2]][tempCoord[i][3]] == "unknown") then
+			return tempCoord[i]
+		elseif (map[tempCoord[i][1]][tempCoord[i][2]][tempCoord[i][3]] == "freespace") then
+			table.insert(coordStack, {tempCoord[i]})
+		else if (map[tempCoord[i][1]][tempCoord[i][2]][tempCoord[i][3]] == "obstacle") then
+
+		end
+	end
+	return nil
+end
+
+function getTask(coord, id)
+	local target = getClosest(coord);
+	if (target == nil) then
+		return "os.sleep(5)"
+	end
+	taskList[id] = coord
+	return "move.to(" .. target[1] .. ", " .. target[2] .. ", " .. target[3] .. ")"
 end
 
 function main()
@@ -26,7 +66,6 @@ function main()
 		local x2 = math.max(args[1], args[4])
 		local y2 = math.max(args[2], args[5])
 		local z2 = math.max(args[3], args[6])
-		local map = {}
 		for x = x1, x2, 1 do
 			map[x] = {}
 			for y = y1, y2, 1 do
@@ -71,7 +110,7 @@ function main()
 					for i = 1, 3, 1 do
 						coord[i] = cmd[i + 2]
 					end
-					rednet.send(id, getTask(coord), protocol)
+					rednet.send(id, getTask(coord, id), protocol)
 					slaveStatus[id] = "Working!"
 				end
 
@@ -82,7 +121,8 @@ function main()
 				if (cmd[2] == "task") then
 					print("Client ended task")
 					rednet.send(id, "ack", protocol)
-					slaveStatus[id] = "Dry!"
+					map[taskList[id][1]][taskList[id][2]][taskList[id][3]] = cmd[3]
+					slaveStatus[id] = "Idle!"
 				end
 			end
 

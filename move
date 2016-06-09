@@ -166,12 +166,12 @@ function face(targetDirection)
 	end
 end
 
-function to(x, y, z)
+function to(x, y, z, force)
 	local x1, y1, z1 = gps.locate()
-	rel(x - x1, y - y1, z - z1)
+	return rel(x - x1, y - y1, z - z1, force)
 end
 
-function rel(x, y, z)
+function rel(x, y, z, force)
 	print("Move rel: " .. x .. ", " .. y .. ", " .. z)
 	if (direction == "unknown") then
 		getDirection()
@@ -182,16 +182,25 @@ function rel(x, y, z)
 	elseif (x > 0) then
 		face("east")
 	end
-	forward(math.abs(x))
+	if not (forward(math.abs(x))) then
+		return -1
+	end
 	if (z < 0) then
 		face("north")
 	elseif (z > 0) then
 		face("south")
 	end
-	forward(math.abs(z))
-	if (y > 0) then
-		up(y)
-	elseif (y < 0) then
-		down(-y)
+	if not (forward(math.abs(z))) then
+		return -2
 	end
+	if (y > 0) then
+		if not (up(y)) then
+			return -3
+		end
+	elseif (y < 0) then
+		if not (down(-y)) then
+			return -3
+		end
+	end
+	return 0
 end
