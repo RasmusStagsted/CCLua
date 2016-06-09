@@ -1,1 +1,1 @@
-git rasmusstagsted CCLua .
+shell.run("git rasmusstagsted CCLua .")

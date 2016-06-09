@@ -102,7 +102,7 @@ function parseInput( user, repo , dldir, path, branch )
     end
 end
 
-print("Downloading github repo!")
+print("Downloading github repo...")
 if http then
 	for i=1, 5, 1 do
 		if tArgs[i] == "." then tArgs[i] = nil end
